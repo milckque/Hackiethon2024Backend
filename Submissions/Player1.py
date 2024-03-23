@@ -48,6 +48,9 @@ class Script:
 
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
+         
+        if get_last_move(enemy) == SECONDARY:
+            return JUMP
         
         # bum rush if enemy 2nd on cooldown
         if secondary_on_cooldown(player):
@@ -71,9 +74,7 @@ class Script:
             return PRIMARY
         
         # stay within bum rush range if enemy 2nd not on cooldown
-        if not secondary_on_cooldown(enemy): 
-            if get_pos(player[0]) - 1 <= get_proj_pos(enemy_projectiles) <= get_pos(player[0]) + 1:
-                return JUMP
+        if not secondary_on_cooldown(enemy):
             if distance > 5:
                 return FORWARD
             if distance < 5:
