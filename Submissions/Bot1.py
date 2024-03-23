@@ -45,13 +45,10 @@ class Script:
     # DO NOT TOUCH
     def init_player_skills(self):
         return self.primary, self.secondary
-    
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-
-        if distance < 3:
+        
+        if distance == 1:
             return LIGHT
-        
         return FORWARD
-        

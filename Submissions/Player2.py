@@ -28,7 +28,6 @@ BLOCK = ("block",)
 
 PRIMARY = get_skill(PRIMARY_SKILL)
 SECONDARY = get_skill(SECONDARY_SKILL)
-CANCEL = ("skill_cancel", )
 
 # no move, aka no input
 NOMOVE = "NoMove"
@@ -49,11 +48,20 @@ class Script:
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
         
-        if get_secondary_cooldown(player) == 0:
+        if get_last_move(enemy) == LIGHT or get_last_move(enemy) == HEAVY:
+            return BLOCK
+        
+        if not primary_on_cooldown(player): 
+            return PRIMARY
+
+        if not secondary_on_cooldown(player):
             return SECONDARY
-        elif get_secondary_cooldown(player) <= 20:
-            return FORWARD
-        elif get_secondary_cooldown(player) <= 40:
-            return JUMP_FORWARD
-        else:
-            return BACK
+
+        if distance <= 1:
+            if not heavy_on_cooldown(player):
+                return HEAVY
+            else:
+                return LIGHT
+        
+        return FORWARD
+        
