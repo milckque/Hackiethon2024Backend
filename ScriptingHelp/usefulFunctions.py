@@ -170,6 +170,7 @@ def heavy_combo(player, enemy):
     player_x, player_y = get_pos(player)
     enemy_x, enemy_y = get_pos(enemy)
     if get_stun_duration(player):
+        print("playerstunned")
         return NOMOVE
     print(get_past_move(player, 1),get_past_move(player, 2))
     if player_y == enemy_y and abs(player_x - enemy_x) == 1:

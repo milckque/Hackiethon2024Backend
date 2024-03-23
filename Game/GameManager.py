@@ -15,8 +15,8 @@ from Game.PlayerConfigs import Player_Controller
 
 # Manually choose bot files to test
 SUBMISSIONPATH = "Submissions"
-PATH1 = "Bot1"
-PATH2 = "Player1"
+PATH1 = "spacing"
+PATH2 = "hadoken"
 
 # Get scripts from bot files and return as script objects
 def getPlayerFiles(path1, path2, subpath):
@@ -32,7 +32,6 @@ def getPlayerFiles(path1, path2, subpath):
         return p1, p2
     else:
         raise Exception("A file does not exist in " + subpath)
-
 
 # Checks for players moving into each other
 def checkCollision(player1, player2, knock1, knock2, check_midair = False):
@@ -65,7 +64,6 @@ def executeOneTurn(player1, player2, p1_script, p2_script, p1_json_dict, p2_json
     # Check for existing projectiles belonging to each player
     p1_projectiles = [proj["projectile"] for proj in projectiles if proj["projectile"]._player._id == 1]
     p2_projectiles = [proj["projectile"] for proj in projectiles if proj["projectile"]._player._id == 2]
-    
     # Pass relevant information to player scripts, and get a move from them
     p1_move = p1_script.get_move(player1, player2, p1_projectiles, p2_projectiles)
     p2_move = p2_script.get_move(player2, player1, p2_projectiles, p1_projectiles)
