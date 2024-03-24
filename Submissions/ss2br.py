@@ -52,11 +52,26 @@ class Script:
         enemy_x, enemy_y = get_pos(enemy)
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
         print(get_past_move(player, 1), get_past_move(enemy, 1), distance)
-        print(get_hp(player), get_hp(enemy))
+        print(get_hp(player), get_hp(enemy), "hp")
+        print(player_x, enemy_x, "pos")
         print(secondary_on_cooldown(player))
         print(get_secondary_skill(enemy))
         if (player._curr_buff_duration > 0):
             #bumrush
+
+            if get_stun_duration(enemy) > 0:
+                print("parried")
+
+                if player_y == enemy_y and abs(player_x - enemy_x) < 2:
+                    if get_past_move(player, 1) == ('light', 'activate'):
+                        if get_past_move(player, 2) == ('light', 'activate'):
+                            return HEAVY
+                        else:
+                            return LIGHT
+                    else:
+                        return LIGHT
+                return FORWARD
+            
             if enemy_projectiles:
                 if not primary_on_cooldown(player):
                     return PRIMARY
@@ -72,18 +87,6 @@ class Script:
                 return FORWARD
             
             #following up the parry
-            if get_stun_duration(enemy) > 0:
-                print("parried")
-
-                if player_y == enemy_y and abs(player_x - enemy_x) < 2:
-                    if get_past_move(player, 1) == ('light', 'activate'):
-                        if get_past_move(player, 2) == ('light', 'activate'):
-                            return HEAVY
-                        else:
-                            return LIGHT
-                    else:
-                        return LIGHT
-                return FORWARD
             
             if get_last_move(player) == ('block', 'activate'):
                 if enemy_x == 0 or enemy_x == 15:

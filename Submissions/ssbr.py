@@ -50,7 +50,18 @@ class Script:
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
         if get_last_move(enemy) == SECONDARY:
             return JUMP
-        
+        if get_stun_duration(enemy):
+            player_x, player_y = get_pos(player)
+            enemy_x, enemy_y = get_pos(enemy)
+            if player_y == enemy_y and abs(player_x - enemy_x) < 2:
+                if get_past_move(player, 1) == ('light', 'activate'):
+                    if get_past_move(player, 2) == ('light', 'activate'):
+                        return HEAVY
+                    else:
+                        return LIGHT
+                else:
+                    return LIGHT
+            return FORWARD
         # bum rush if enemy 2nd on cooldown
         if secondary_on_cooldown(player):
             # dashes
@@ -67,6 +78,8 @@ class Script:
         if distance <= 3:
             if not secondary_on_cooldown(player):
                 return SECONDARY
+            else:
+                return FORWARD
 
         # go to bum rush mode
         if get_last_move(enemy) == SECONDARY and not primary_on_cooldown(player):
@@ -74,9 +87,12 @@ class Script:
         
         # stay within bum rush range if enemy 2nd not on cooldown
         if not secondary_on_cooldown(enemy):
-            if distance > 5:
-                return FORWARD
             if distance < 5:
                 return BACK
-            
+            if enemy_projectiles:
+                if get_proj_pos(enemy_projectiles[0])[0] - 1 <= get_pos(player)[0] <= \
+                    get_proj_pos(enemy_projectiles[0])[0] + 1:
+                    return JUMP_FORWARD
+            if distance > 5:
+                return FORWARD
         
