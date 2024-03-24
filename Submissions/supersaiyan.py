@@ -11,7 +11,7 @@ from Game.gameSettings import HP, LEFTBORDER, RIGHTBORDER, LEFTSTART, RIGHTSTART
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
 PRIMARY_SKILL = DashAttackSkill
-SECONDARY_SKILL = Grenade
+SECONDARY_SKILL = SuperSaiyanSkill
 
 #constants, for easier move return
 #movements
@@ -48,27 +48,25 @@ class Script:
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-        if enemy_projectiles:
-            if get_proj_pos(enemy_projectiles[0])[0] - 1 <= get_pos(player)[0] <= \
-                get_proj_pos(enemy_projectiles[0])[0] + 1:
-                return JUMP
-        if get_pos(player)[0] == 0 or get_pos(player)[0] == 15:
-            return PRIMARY
-        
-        if distance > 3:
-            return FORWARD
-        elif distance < 3:
-            return BACK
-        
-        
-        
-        if get_last_move == "dash_attack": 
-            return JUMP_FORWARD
-        
-        
-
+        supersaiyan = 0
         if not secondary_on_cooldown(player):
             return SECONDARY
+        if (player._curr_buff_duration > 0):
+            player_x, player_y = get_pos(player)
+            enemy_x, enemy_y = get_pos(enemy)
+            #print(get_past_move(player, 1),get_past_move(player, 2))
+            if player_y == enemy_y and abs(player_x - enemy_x) < 2:
+                if get_past_move(player, 1) == ('light', 'activate'):
+                    if get_past_move(player, 2) == ('light', 'activate'):
+                        return HEAVY
+                    else:
+                        return LIGHT
+                else:
+                    return LIGHT
+            return FORWARD
+        print("f", player._curr_buff_duration)
+        print(get_past_move(player, 20))
+        print("secondary", secondary_on_cooldown(player))
         
         
         

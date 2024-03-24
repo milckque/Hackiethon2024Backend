@@ -48,7 +48,6 @@ class Script:
 
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-         
         if get_last_move(enemy) == SECONDARY:
             return JUMP
         

@@ -4,14 +4,15 @@ from Game.projectiles import *
 from ScriptingHelp.usefulFunctions import *
 from Game.playerActions import defense_actions, attack_actions, projectile_actions
 from Game.gameSettings import HP, LEFTBORDER, RIGHTBORDER, LEFTSTART, RIGHTSTART, PARRYSTUN
+import random
 
 
 # PRIMARY CAN BE: Teleport, Super Saiyan, Meditate, Dash Attack, Uppercut, One Punch
 # SECONDARY CAN BE : Hadoken, Grenade, Boomerang, Bear Trap
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
-PRIMARY_SKILL = DashAttackSkill
-SECONDARY_SKILL = Grenade
+PRIMARY_SKILL = Meditate
+SECONDARY_SKILL = BearTrap
 
 #constants, for easier move return
 #movements
@@ -22,13 +23,13 @@ JUMP_FORWARD = ("move", (1,1))
 JUMP_BACKWARD = ("move", (-1, 1))
 
 # attacks and block
-LIGHT = ("light",)
-HEAVY = ("heavy",)
-BLOCK = ("block",)
+LIGHT = ("light","activate")
+HEAVY = ("heavy","activate")
+BLOCK = ("block","activate")
+
 
 PRIMARY = get_skill(PRIMARY_SKILL)
 SECONDARY = get_skill(SECONDARY_SKILL)
-CANCEL = ("skill_cancel", )
 
 # no move, aka no input
 NOMOVE = "NoMove"
@@ -45,30 +46,15 @@ class Script:
     # DO NOT TOUCH
     def init_player_skills(self):
         return self.primary, self.secondary
+    
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
-        distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-        if enemy_projectiles:
-            if get_proj_pos(enemy_projectiles[0])[0] - 1 <= get_pos(player)[0] <= \
-                get_proj_pos(enemy_projectiles[0])[0] + 1:
-                return JUMP
-        if get_pos(player)[0] == 0 or get_pos(player)[0] == 15:
-            return PRIMARY
-        
-        if distance > 3:
-            return FORWARD
-        elif distance < 3:
-            return BACK
-        
-        
-        
-        if get_last_move == "dash_attack": 
-            return JUMP_FORWARD
-        
-        
-
-        if not secondary_on_cooldown(player):
-            return SECONDARY
-        
-        
-        
+        posibleMove = [JUMP,JUMP_FORWARD,JUMP_BACKWARD,FORWARD,BACK,LIGHT,HEAVY,BLOCK]
+        if get_last_move(enemy) != SECONDARY or get_last_move(enemy) != PRIMARY:
+            return get_last_move(enemy)
+        elif get_last_move(enemy) == SECONDARY and not secondary_on_cooldown(player) and get_hp(player)<100:
+            return get_last_move(enemy)
+        elif get_last_move(enemy) == PRIMARY and not primary_on_cooldown(player):
+            return get_last_move(enemy)
+        else:
+            return random.choice(posibleMove)

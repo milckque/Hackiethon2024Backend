@@ -11,7 +11,7 @@ from Game.gameSettings import HP, LEFTBORDER, RIGHTBORDER, LEFTSTART, RIGHTSTART
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
 PRIMARY_SKILL = DashAttackSkill
-SECONDARY_SKILL = Grenade
+SECONDARY_SKILL = BearTrap
 
 #constants, for easier move return
 #movements
@@ -48,27 +48,7 @@ class Script:
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-        if enemy_projectiles:
-            if get_proj_pos(enemy_projectiles[0])[0] - 1 <= get_pos(player)[0] <= \
-                get_proj_pos(enemy_projectiles[0])[0] + 1:
-                return JUMP
-        if get_pos(player)[0] == 0 or get_pos(player)[0] == 15:
-            return PRIMARY
-        
-        if distance > 3:
-            return FORWARD
-        elif distance < 3:
-            return BACK
-        
-        
-        
-        if get_last_move == "dash_attack": 
-            return JUMP_FORWARD
-        
-        
-
-        if not secondary_on_cooldown(player):
-            return SECONDARY
+        return SECONDARY
         
         
         

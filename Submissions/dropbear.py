@@ -10,7 +10,7 @@ from Game.gameSettings import HP, LEFTBORDER, RIGHTBORDER, LEFTSTART, RIGHTSTART
 # SECONDARY CAN BE : Hadoken, Grenade, Boomerang, Bear Trap
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
-PRIMARY_SKILL = TeleportSkill
+PRIMARY_SKILL = DashAttackSkill
 SECONDARY_SKILL = BearTrap
 
 #constants, for easier move return
@@ -48,26 +48,41 @@ class Script:
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-        if distance > abs(seco_range(player)):
+        # dodge projectiles 
+        if get_stun_duration(enemy) > 0:
+            player_x, player_y = get_pos(player)
+            enemy_x, enemy_y = get_pos(enemy)
+            if player_y == enemy_y and abs(player_x - enemy_x) == 1:
+                if get_past_move(player, 1) == LIGHT:
+                    if get_past_move(player, 2) == LIGHT:
+                        return HEAVY
+                    else:
+                        return LIGHT
+                else:
+                    return LIGHT
             return FORWARD
-        elif distance < abs(seco_range(player)):
-            return BACK
-        
         if enemy_projectiles:
             if get_proj_pos(enemy_projectiles[0])[0] - 1 <= get_pos(player)[0] <= \
                 get_proj_pos(enemy_projectiles[0])[0] + 1:
                 return JUMP
-            
-        if get_pos(player)[0] == 0 or get_pos(player) == 0:
-            return PRIMARY
-        
-        if get_last_move == "dash_attack": 
+        if get_last_move(enemy) == ('dash_attack', 'startup') and distance <= 4: 
             return JUMP_FORWARD
         
+        if get_last_move(enemy) == ('dash_attack', 'startup') and distance > 4: 
+            return JUMP_BACKWARD
         
-
-        if not secondary_on_cooldown(player):
+        if (get_pos(player)[0] <= 1 or get_pos(player)[0] >= 14) and distance <= 3:
+            return PRIMARY
+        
+        if not secondary_on_cooldown(player) and get_pos(player)[1] == 0:
             return SECONDARY
+        
+        if secondary_on_cooldown or distance <= 3:
+            return BACK
+        
+        
+        
+        
         
         
         

@@ -47,6 +47,7 @@ class Script:
         return self.primary, self.secondary
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
+
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
         if not primary_on_cooldown(player):
             return PRIMARY
@@ -57,9 +58,10 @@ class Script:
         else: 
             player_x, player_y = get_pos(player)
             enemy_x, enemy_y = get_pos(enemy)
-            if player_y == enemy_y and abs(player_x - enemy_x) == 1:
-                if get_past_move(player, 1) == LIGHT:
-                    if get_past_move(player, 2) == LIGHT:
+            #print(get_past_move(player, 1),get_past_move(player, 2))
+            if player_y == enemy_y and abs(player_x - enemy_x) < 2:
+                if get_past_move(player, 1) == ('light', 'activate'):
+                    if get_past_move(player, 2) == ('light', 'activate'):
                         return HEAVY
                     else:
                         return LIGHT
